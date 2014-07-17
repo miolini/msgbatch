@@ -1,7 +1,7 @@
-msgbatch
+MsgBatch
 ========
 
-Go lang msgpack batch data library
+Go lang msgpack batch data library for compress efficient processing.
 
 Examples:
 
