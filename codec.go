@@ -62,7 +62,7 @@ func (batch *Batch) GetValues() (values []map[string]string) {
 	}
 	for columnIndex, column := range batch.Values {
 		columnName := batch.Columns[columnIndex]
-		for valueIndex, value := range column {
+		for _, value := range column {
 			values[value.i][columnName] = value.v
 		}
 	}
