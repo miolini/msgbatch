@@ -29,12 +29,13 @@ import (
 )
 
 func TestEncode(t *testing.T) {
-	batch := genBatch(10)
+	num := 10000
+	batch := genBatch(num)
 	data, err := batch.Encode()
 	if err != nil {
 		t.Logf("encode err: %s", err)
 	}
-	t.Logf("data: %v", data)
+	t.Logf("batch %d items: %d", num, len(data))
 }
 
 func TestCodecDifferent(t *testing.T) {
@@ -69,7 +70,7 @@ func BenchmarkDecode(b *testing.B) {
 	if err != nil {
 		b.Logf("encode err: %s", err)
 	} else {
-		b.Logf("batch length: %d", len(batch.GetValues()))
+		b.Logf("batch: bytes: %d, length: %d", len(data), len(batch.GetValues()))
 	}
 }
 
@@ -79,7 +80,9 @@ func genBatch(num int) Batch {
 		e := map[string]string{}
 		e["ts"] = fmt.Sprintf("%d", time.Now().Unix())
 		e["url"] = fmt.Sprintf("http://%d/%d", rand.Int(), rand.Int())
-		e["rf"] = fmt.Sprintf("http://%d/%d", rand.Int(), rand.Int())
+		if rand.Int() % 3 == 0 {
+			e["rf"] = fmt.Sprintf("http://%d/%d", rand.Int(), rand.Int())
+		}
 		e["rand"] = fmt.Sprintf("%d", rand.Int())
 		batch.Add(e)
 	}
