@@ -29,7 +29,12 @@ import (
 type Batch struct {
 	Length  int
 	Columns []string
-	Values  [][]string
+	Values  [][]Value
+}
+
+type Value struct {
+	i int
+	v string
 }
 
 func (batch *Batch) Add(e map[string]string) {
@@ -44,9 +49,9 @@ func (batch *Batch) Add(e map[string]string) {
 		if columnIndex == -1 {
 			columnIndex = len(batch.Columns)
 			batch.Columns = append(batch.Columns, key)
-			batch.Values = append(batch.Values, []string{})
+			batch.Values = append(batch.Values, []Value{})
 		}
-		batch.Values[columnIndex] = append(batch.Values[columnIndex], value)
+		batch.Values[columnIndex] = append(batch.Values[columnIndex], Value{i: batch.Length, v: value})
 	}
 	batch.Length++
 }
@@ -58,7 +63,7 @@ func (batch *Batch) GetValues() (values []map[string]string) {
 	for columnIndex, column := range batch.Values {
 		columnName := batch.Columns[columnIndex]
 		for valueIndex, value := range column {
-			values[valueIndex][columnName] = value
+			values[valueIndex][columnName] = value.v
 		}
 	}
 	return

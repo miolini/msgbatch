@@ -37,6 +37,15 @@ func TestEncode(t *testing.T) {
 	t.Logf("data: %v", data)
 }
 
+func TestCodecDifferent(t *testing.T) {
+	batch := Batch{}
+	batch.Add(map[string]string{"url":"http://google.com/", "ts":"123"})
+	batch.Add(map[string]string{"url":"http://google.com/", "id":"908908"})
+	batch.Add(map[string]string{"url":"http://google.com/", "ts":"43556478346", "id": "6546"})
+	batch.Add(map[string]string{"url":"http://google.com/"})
+	t.Logf("batch %v", batch)
+}
+
 func BenchmarkEncode(b *testing.B) {
 	batch := genBatch(1000)
 	var data []byte
