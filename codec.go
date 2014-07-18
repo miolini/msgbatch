@@ -34,10 +34,10 @@ type Batch struct {
 
 type Value struct {
 	i int
-	v string
+	v interface{}
 }
 
-func (batch *Batch) Add(e map[string]string) {
+func (batch *Batch) Add(e map[string]interface{}) {
 	for key, value := range e {
 		columnIndex := -1
 		for i, column := range batch.Columns {
@@ -56,9 +56,9 @@ func (batch *Batch) Add(e map[string]string) {
 	batch.Length++
 }
 
-func (batch *Batch) GetValues() (values []map[string]string) {
+func (batch *Batch) GetValues() (values []map[string]interface{}) {
 	for i := 0; i < batch.Length; i++ {
-		values = append(values, make(map[string]string))
+		values = append(values, make(map[string]interface{}))
 	}
 	for columnIndex, column := range batch.Values {
 		columnName := batch.Columns[columnIndex]

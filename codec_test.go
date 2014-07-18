@@ -40,10 +40,10 @@ func TestEncode(t *testing.T) {
 
 func TestCodecDifferent(t *testing.T) {
 	batch := Batch{}
-	batch.Add(map[string]string{"url":"http://google.com/", "ts":"123"})
-	batch.Add(map[string]string{"url":"http://google.com/", "id":"908908"})
-	batch.Add(map[string]string{"url":"http://google.com/", "ts":"43556478346", "id": "6546"})
-	batch.Add(map[string]string{"url":"http://google.com/"})
+	batch.Add(map[string]interface{}{"url":"http://google.com/", "ts":123})
+	batch.Add(map[string]interface{}{"url":"http://google.com/", "id":908908})
+	batch.Add(map[string]interface{}{"url":"http://google.com/", "ts":43556478346, "id": 6546})
+	batch.Add(map[string]interface{}{"url":"http://google.com/"})
 	t.Logf("batch %v", batch)
 }
 
@@ -77,7 +77,7 @@ func BenchmarkDecode(b *testing.B) {
 func genBatch(num int) Batch {
 	batch := Batch{}
 	for i := 0; i < 1000; i++ {
-		e := map[string]string{}
+		e := map[string]interface{}{}
 		e["ts"] = fmt.Sprintf("%d", time.Now().Unix())
 		e["url"] = fmt.Sprintf("http://%d/%d", rand.Int(), rand.Int())
 		if rand.Int() % 3 == 0 {
