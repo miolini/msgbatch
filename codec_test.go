@@ -28,23 +28,16 @@ import (
 	"time"
 )
 
-func TestEncode(t *testing.T) {
-	num := 10000
-	batch := genBatch(num)
-	data, err := batch.Encode()
-	if err != nil {
-		t.Logf("encode err: %s", err)
-	}
-	t.Logf("batch %d items: %d", num, len(data))
-}
-
 func TestCodecDifferent(t *testing.T) {
 	batch := Batch{}
 	batch.Add(map[string]interface{}{"url":"http://google.com/", "ts":123})
 	batch.Add(map[string]interface{}{"url":"http://google.com/", "id":908908})
 	batch.Add(map[string]interface{}{"url":"http://google.com/", "ts":43556478346, "id": 6546})
-	batch.Add(map[string]interface{}{"url":"http://google.com/"})
+	batch.Add(map[string]interface{}{"url":"http://yahoo.com/"})
+	batch.Add(map[string]interface{}{})
 	t.Logf("batch %v", batch)
+	data, _ := batch.Encode()
+	t.Logf("data %d: %s", len(data), string(data))
 }
 
 func BenchmarkEncode(b *testing.B) {

@@ -29,12 +29,7 @@ import (
 type Batch struct {
 	Length  int
 	Columns []string
-	Values  [][]Value
-}
-
-type Value struct {
-	i int
-	v interface{}
+	Values  [][][]interface{}
 }
 
 func (batch *Batch) Add(e map[string]interface{}) {
@@ -49,9 +44,9 @@ func (batch *Batch) Add(e map[string]interface{}) {
 		if columnIndex == -1 {
 			columnIndex = len(batch.Columns)
 			batch.Columns = append(batch.Columns, key)
-			batch.Values = append(batch.Values, []Value{})
+			batch.Values = append(batch.Values, [][]interface{}{})
 		}
-		batch.Values[columnIndex] = append(batch.Values[columnIndex], Value{i: batch.Length, v: value})
+		batch.Values[columnIndex] = append(batch.Values[columnIndex], []interface{}{batch.Length, value})
 	}
 	batch.Length++
 }
@@ -63,13 +58,17 @@ func (batch *Batch) GetValues() (values []map[string]interface{}) {
 	for columnIndex, column := range batch.Values {
 		columnName := batch.Columns[columnIndex]
 		for _, value := range column {
-			values[value.i][columnName] = value.v
+			values[value[0].(int64)][columnName] = value[1]
 		}
 	}
 	return
 }
 
 func (batch *Batch) Encode() (data []byte, err error) {
+	rawBatch := make([]interface{}, 3)
+	rawBatch[0] = batch.Length
+	rawBatch[1] = batch.Columns
+	rawBatch[2] = batch.Values
 	data, err = msgpack.Marshal(batch)
 	if err != nil {
 		return
@@ -83,6 +82,10 @@ func Decode(data []byte) (batch Batch, err error) {
 	if err != nil {
 		return
 	}
-	err = msgpack.Unmarshal(data, &batch)
+	var rawBatch []interface{}
+	err = msgpack.Unmarshal(data, &rawBatch)
+	batch.Length = rawBatch[0].(int)
+	batch.Columns = rawBatch[1].([]string)
+	batch.Values = rawBatch[2].([][][]interface{})
 	return
 }
