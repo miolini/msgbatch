@@ -36,8 +36,20 @@ func TestCodecDifferent(t *testing.T) {
 	batch.Add(map[string]interface{}{"url":"http://yahoo.com/"})
 	batch.Add(map[string]interface{}{})
 	t.Logf("batch %v", batch)
-	data, _ := batch.Encode()
+	data, err := batch.Encode()
+	if err != nil {
+		t.Logf("error: %s", err)
+		return
+	}
 	t.Logf("data %d: %s", len(data), string(data))
+	batch, err = Decode(data)
+	if err != nil {
+		t.Logf("error: %s", err)
+		return
+	}
+	t.Logf("batch %v", batch)
+	values := batch.GetValues()
+	t.Logf("values: %v", values)
 }
 
 func BenchmarkEncode(b *testing.B) {

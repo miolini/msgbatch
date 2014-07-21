@@ -90,7 +90,18 @@ func Decode(data []byte) (batch Batch, err error) {
 		return
 	}
 	batch.Length = rawBatch[0].(int64)
-	batch.Columns = rawBatch[1].([]string)
-	batch.Values = rawBatch[2].([][][]interface{})
+	columns := rawBatch[1].([]interface{})
+	for _, column := range columns {
+		batch.Columns = append(batch.Columns, column.(string))
+	}
+	valueColumns := rawBatch[2].([]interface{})
+	for _, valueColumn := range valueColumns {
+		bValueColumn := [][]interface{}{}
+		for _, _values := range valueColumn.([]interface{}) {
+			values := _values.([]interface{})
+			bValueColumn = append(bValueColumn, values)
+		}
+		batch.Values = append(batch.Values, bValueColumn)
+	}
 	return
 }
