@@ -24,6 +24,7 @@
 import (
 	"code.google.com/p/snappy-go/snappy"
 	"github.com/vmihailenco/msgpack"
+	"fmt"
 )
 
 type Batch struct {
@@ -84,6 +85,10 @@ func Decode(data []byte) (batch Batch, err error) {
 	}
 	var rawBatch []interface{}
 	err = msgpack.Unmarshal(data, &rawBatch)
+	if len(rawBatch) != 3 {
+		err = fmt.Errorf("bad batch data: root columns not equals 3: %d", len(rawBatch))
+		return
+	}
 	batch.Length = rawBatch[0].(int)
 	batch.Columns = rawBatch[1].([]string)
 	batch.Values = rawBatch[2].([][][]interface{})
