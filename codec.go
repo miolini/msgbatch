@@ -53,7 +53,7 @@ func (batch *Batch) Add(e map[string]interface{}) {
 }
 
 func (batch *Batch) GetValues() (values []map[string]interface{}) {
-	for i := 0; i < batch.Length; i++ {
+	for i := int64(0); i < batch.Length; i++ {
 		values = append(values, make(map[string]interface{}))
 	}
 	for columnIndex, column := range batch.Values {
@@ -70,7 +70,7 @@ func (batch *Batch) Encode() (data []byte, err error) {
 	rawBatch[0] = batch.Length
 	rawBatch[1] = batch.Columns
 	rawBatch[2] = batch.Values
-	data, err = msgpack.Marshal(rawBcatch)
+	data, err = msgpack.Marshal(rawBatch)
 	if err != nil {
 		return
 	}
