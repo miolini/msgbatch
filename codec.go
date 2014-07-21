@@ -28,7 +28,7 @@ import (
 )
 
 type Batch struct {
-	Length  int
+	Length  int64
 	Columns []string
 	Values  [][][]interface{}
 }
@@ -70,7 +70,7 @@ func (batch *Batch) Encode() (data []byte, err error) {
 	rawBatch[0] = batch.Length
 	rawBatch[1] = batch.Columns
 	rawBatch[2] = batch.Values
-	data, err = msgpack.Marshal(rawBatch)
+	data, err = msgpack.Marshal(rawBcatch)
 	if err != nil {
 		return
 	}
@@ -89,7 +89,7 @@ func Decode(data []byte) (batch Batch, err error) {
 		err = fmt.Errorf("bad batch data: root columns not equals 3: %d", len(rawBatch))
 		return
 	}
-	batch.Length = rawBatch[0].(int)
+	batch.Length = rawBatch[0].(int64)
 	batch.Columns = rawBatch[1].([]string)
 	batch.Values = rawBatch[2].([][][]interface{})
 	return
