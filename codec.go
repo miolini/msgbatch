@@ -70,7 +70,7 @@ func (batch *Batch) Encode() (data []byte, err error) {
 	rawBatch[0] = batch.Length
 	rawBatch[1] = batch.Columns
 	rawBatch[2] = batch.Values
-	data, err = msgpack.Marshal(batch)
+	data, err = msgpack.Marshal(rawBatch)
 	if err != nil {
 		return
 	}
